@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Best Traveller" },
+      { name: "description", content: "Wanderlust Planner is a mobile app for booking travel and hotels with a modern, minimalist design." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Best Traveller" },
+      { property: "og:description", content: "Wanderlust Planner is a mobile app for booking travel and hotels with a modern, minimalist design." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Best Traveller" },
+      { name: "twitter:description", content: "Wanderlust Planner is a mobile app for booking travel and hotels with a modern, minimalist design." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/639f1ba7-84c1-4af1-a10c-40acd2bbd153/id-preview-48b98e23--9134978f-5693-4792-ab38-278653c62282.lovable.app-1778995597563.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/639f1ba7-84c1-4af1-a10c-40acd2bbd153/id-preview-48b98e23--9134978f-5693-4792-ab38-278653c62282.lovable.app-1778995597563.png" },
     ],
     links: [
       {
