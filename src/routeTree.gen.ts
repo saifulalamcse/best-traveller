@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ItinerariesRouteImport } from './routes/itineraries'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as ExploreRouteImport } from './routes/explore'
@@ -31,6 +32,11 @@ const SigninRoute = SigninRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ItinerariesRoute = ItinerariesRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/home': typeof HomeRoute
   '/itineraries': typeof ItinerariesRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/home': typeof HomeRoute
   '/itineraries': typeof ItinerariesRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/home': typeof HomeRoute
   '/itineraries': typeof ItinerariesRoute
+  '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/itineraries'
+    | '/profile'
     | '/search'
     | '/signin'
     | '/signup'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/itineraries'
+    | '/profile'
     | '/search'
     | '/signin'
     | '/signup'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/itineraries'
+    | '/profile'
     | '/search'
     | '/signin'
     | '/signup'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   HomeRoute: typeof HomeRoute
   ItinerariesRoute: typeof ItinerariesRoute
+  ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/itineraries': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   HomeRoute: HomeRoute,
   ItinerariesRoute: ItinerariesRoute,
+  ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
