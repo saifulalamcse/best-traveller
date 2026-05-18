@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { destinations } from "@/lib/destinations";
 import { useState } from "react";
 
-export const Route = createFileRoute("/home")({
+export const Route = createFileRoute("/_authenticated/home")({
   component: HomePage,
 });
 
