@@ -1,13 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Settings, Heart, CreditCard, Globe, LogOut, ChevronRight, Award } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/profile")({ component: Profile });
 
 const stats = [
-  { label: "Trips", value: "12" },
-  { label: "Countries", value: "8" },
-  { label: "Saved", value: "34" },
+  { label: "Trips", value: "0" },
+  { label: "Countries", value: "0" },
+  { label: "Saved", value: "0" },
 ];
 
 const rows = [
@@ -18,14 +20,36 @@ const rows = [
 ];
 
 function Profile() {
+  const navigate = useNavigate();
+  const [name, setName] = useState("Traveller");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setEmail(user.email ?? "");
+      const { data: profile } = await supabase
+        .from("profiles").select("full_name").eq("id", user.id).maybeSingle();
+      setName(profile?.full_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "Traveller");
+    })();
+  }, []);
+
+  const initial = name.charAt(0).toUpperCase();
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/" });
+  };
+
   return (
     <AppShell>
       <header className="px-5 pt-12">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/30 font-display text-2xl text-foreground">A</div>
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/30 font-display text-2xl text-foreground">{initial}</div>
           <div>
-            <h1 className="font-display text-2xl text-foreground">Ada Lovelace</h1>
-            <p className="text-xs text-muted-foreground">ada@wander.app · Gold member</p>
+            <h1 className="font-display text-2xl text-foreground">{name}</h1>
+            <p className="text-xs text-muted-foreground">{email} · Gold member</p>
           </div>
         </div>
         <div className="mt-6 grid grid-cols-3 gap-2 rounded-3xl bg-card p-4 shadow-soft">
@@ -57,12 +81,12 @@ function Profile() {
           </li>
         ))}
         <li className="pt-2">
-          <Link to="/" className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-destructive transition-colors hover:bg-destructive/10">
+          <button onClick={signOut} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-destructive transition-colors hover:bg-destructive/10">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-destructive/10">
               <LogOut size={16} />
             </span>
             <span className="flex-1 text-sm font-medium">Sign out</span>
-          </Link>
+          </button>
         </li>
       </ul>
     </AppShell>
