@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { destinations } from "@/lib/destinations";
 import { MapPin } from "lucide-react";
 
-export const Route = createFileRoute("/explore")({ component: Explore });
+export const Route = createFileRoute("/_authenticated/explore")({ component: Explore });
 
 const categories = ["All", "Beach", "Mountain", "City", "Desert", "Cultural"];
 
