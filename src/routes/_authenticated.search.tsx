@@ -9,7 +9,7 @@ const schema = z.object({
   q: fallback(z.string(), "").default(""),
 });
 
-export const Route = createFileRoute("/search")({
+export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: zodValidator(schema),
   component: SearchPage,
 });

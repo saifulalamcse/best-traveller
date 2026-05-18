@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { destinations } from "@/lib/destinations";
 import { Calendar, MapPin, Plus } from "lucide-react";
 
-export const Route = createFileRoute("/itineraries")({ component: Itineraries });
+export const Route = createFileRoute("/_authenticated/itineraries")({ component: Itineraries });
 
 const trips = [
   { d: destinations[0], dates: "Jun 14 — Jun 19", status: "Upcoming" },

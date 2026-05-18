@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { Send, Sparkles, Mic } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/chat")({ component: Chat });
+export const Route = createFileRoute("/_authenticated/chat")({ component: Chat });
 
 const seed = [
   { from: "ai", text: "Morning, Ada. Want me to sketch a 4-day Lisbon trip under $1,200?" },

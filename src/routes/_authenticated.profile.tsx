@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Settings, Heart, CreditCard, Globe, LogOut, ChevronRight, Award } from "lucide-react";
 
-export const Route = createFileRoute("/profile")({ component: Profile });
+export const Route = createFileRoute("/_authenticated/profile")({ component: Profile });
 
 const stats = [
   { label: "Trips", value: "12" },
