@@ -69,25 +69,3 @@ function HomePage() {
     </AppShell>
   );
 }
-
-function WideCard({ d }: { d: typeof destinations[number] }) {
-  return (
-    <Link to="/search" search={{ q: d.location }} className="flex gap-3 rounded-3xl bg-card p-3 shadow-soft">
-      <img src={d.image} alt={d.title} loading="lazy" className="h-24 w-24 shrink-0 rounded-2xl object-cover" />
-      <div className="flex flex-1 flex-col justify-between py-1">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-accent">{d.mood}</p>
-          <h3 className="font-display text-base text-foreground">{d.title}</h3>
-          <p className="text-xs text-muted-foreground">{d.location}</p>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-foreground">{d.price}</span>
-          <span className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Star size={12} className="fill-accent text-accent" />
-            {d.rating}
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
