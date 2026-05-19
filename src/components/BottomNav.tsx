@@ -15,11 +15,16 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-1/2 z-50 w-full max-w-[480px] -translate-x-1/2 border-t border-border/60 bg-background/85 px-2 pb-[env(safe-area-inset-bottom)] pt-2 backdrop-blur-xl">
       <ul className="flex items-center justify-between">
         {tabs.map(({ to, label, icon: Icon }) => {
-          const active = pathname === to || (to === "/home" && pathname === "/");
+          const active =
+            pathname === to ||
+            pathname.startsWith(`${to}/`) ||
+            (to === "/home" && pathname === "/");
           return (
             <li key={to} className="flex-1">
               <Link
                 to={to}
+                aria-label={label}
+                aria-current={active ? "page" : undefined}
                 className="group flex flex-col items-center gap-1 rounded-2xl px-2 py-2 transition-colors"
               >
                 <span

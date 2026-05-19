@@ -19,7 +19,11 @@ function Itineraries() {
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Itineraries</p>
           <h1 className="mt-1 font-display text-3xl text-foreground">Your trips, mapped.</h1>
         </div>
-        <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-foreground text-background shadow-card">
+        <button
+          type="button"
+          aria-label="Create new trip"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-foreground text-background shadow-card"
+        >
           <Plus size={20} />
         </button>
       </header>
@@ -27,7 +31,9 @@ function Itineraries() {
       <div className="mt-6 flex gap-2 px-5">
         {["Upcoming", "Planning", "Past", "Shared"].map((t, i) => (
           <button
+            type="button"
             key={t}
+            aria-pressed={i === 0}
             className={`rounded-full px-4 py-2 text-xs font-semibold ${
               i === 0 ? "bg-foreground text-background" : "bg-secondary text-muted-foreground"
             }`}
@@ -38,11 +44,11 @@ function Itineraries() {
       </div>
 
       <div className="mt-4 space-y-4 px-5">
-        {trips.map((t, i) => (
-          <article key={i} className="overflow-hidden rounded-3xl bg-card shadow-soft">
+        {trips.map((t) => (
+          <article key={`${t.d.id}-${t.dates}`} className="overflow-hidden rounded-3xl bg-card shadow-soft">
             <div className="relative h-40">
               <img src={t.d.image} alt={t.d.location} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-              <div className="gradient-overlay absolute inset-0" />
+              <div className="gradient-overlay absolute inset-0" aria-hidden="true" />
               <span className="absolute right-3 top-3 rounded-full bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground">
                 {t.status}
               </span>

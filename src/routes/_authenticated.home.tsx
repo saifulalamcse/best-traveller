@@ -27,7 +27,11 @@ function HomePage() {
               Ready for your next adventure?
             </p>
           </div>
-          <button className="shrink-0 rounded-2xl border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground shadow-soft">
+          <button
+            type="button"
+            aria-label="Open weather forecast"
+            className="shrink-0 rounded-2xl border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground shadow-soft"
+          >
             Weather
           </button>
         </div>
@@ -38,7 +42,9 @@ function HomePage() {
           <h2 className="text-xl font-bold tracking-tight text-foreground">
             Based on your mood
           </h2>
-          <button className="text-sm font-medium text-foreground/80">See all</button>
+          <button type="button" className="text-sm font-medium text-foreground/80">
+            See all
+          </button>
         </div>
 
         <div className="space-y-4">
@@ -57,8 +63,8 @@ function HomePage() {
                 height={768}
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="gradient-overlay absolute inset-0" />
-              <div className="absolute inset-x-5 bottom-5 text-white">
+              <div className="gradient-overlay absolute inset-0" aria-hidden="true" />
+              <div className="absolute inset-x-5 bottom-5 text-background">
                 <p className="text-sm font-medium opacity-95">{c.mood}</p>
                 <h3 className="mt-1 text-2xl font-bold tracking-tight">{c.title}</h3>
               </div>

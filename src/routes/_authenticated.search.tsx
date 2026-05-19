@@ -26,19 +26,22 @@ function SearchPage() {
   });
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-[480px] bg-background pb-10">
+    <div className="mx-auto min-h-dvh w-full max-w-[480px] bg-background pb-10">
       <header className="sticky top-0 z-20 bg-background/90 px-5 pb-3 pt-12 backdrop-blur-xl">
         <div className="flex items-center gap-3">
           <button
+            type="button"
+            aria-label="Back to home"
             onClick={() => navigate({ to: "/home" })}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground"
           >
             <ArrowLeft size={18} />
           </button>
           <div className="flex flex-1 items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-soft">
-            <SearchIcon size={16} className="text-muted-foreground" />
+            <SearchIcon size={16} className="text-muted-foreground" aria-hidden="true" />
+            <label htmlFor="search-input" className="sr-only">Search destinations</label>
             <input
-              autoFocus
+              id="search-input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Where to next?"

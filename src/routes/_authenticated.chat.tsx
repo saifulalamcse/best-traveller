@@ -22,7 +22,7 @@ function Chat() {
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">AI Coach</p>
           <h1 className="mt-1 font-display text-3xl text-foreground">Wander.</h1>
         </div>
-        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/20">
+        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/20" aria-hidden="true">
           <Sparkles size={18} className="text-accent" />
         </span>
       </header>
@@ -43,26 +43,31 @@ function Chat() {
       </div>
       <div className="mt-6 flex gap-2 overflow-x-auto px-5 pb-2 [&::-webkit-scrollbar]:hidden">
         {suggestions.map((s) => (
-          <button key={s} className="shrink-0 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-foreground">
+          <button type="button" key={s} className="shrink-0 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-foreground">
             {s}
           </button>
         ))}
       </div>
       <div className="fixed inset-x-0 bottom-20 z-40 mx-auto max-w-[480px] px-5">
-        <div className="flex items-center gap-2 rounded-3xl border border-border bg-card p-2 shadow-card">
+        <form
+          className="flex items-center gap-2 rounded-3xl border border-border bg-card p-2 shadow-card"
+          onSubmit={(e) => { e.preventDefault(); setInput(""); }}
+        >
+          <label htmlFor="chat-input" className="sr-only">Message Wander AI coach</label>
           <input
+            id="chat-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask anything about travel…"
             className="flex-1 bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
           />
-          <button className="flex h-10 w-10 items-center justify-center rounded-2xl text-muted-foreground">
+          <button type="button" aria-label="Voice input" className="flex h-10 w-10 items-center justify-center rounded-2xl text-muted-foreground">
             <Mic size={18} />
           </button>
-          <button className="flex h-10 w-10 items-center justify-center rounded-2xl bg-foreground text-background">
+          <button type="submit" aria-label="Send message" className="flex h-10 w-10 items-center justify-center rounded-2xl bg-foreground text-background">
             <Send size={16} />
           </button>
-        </div>
+        </form>
       </div>
     </AppShell>
   );
