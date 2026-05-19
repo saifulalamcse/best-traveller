@@ -89,7 +89,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
   };
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-background px-6 pb-10 pt-12">
+    <div className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-background px-6 pb-10 pt-12">
       <Link
         to="/"
         className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground"
@@ -143,7 +143,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
               placeholder="••••••••"
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
             />
-            <button type="button" onClick={() => setShowPwd((v) => !v)} className="text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setShowPwd((v) => !v)}
+              aria-label={showPwd ? "Hide password" : "Show password"}
+              aria-pressed={showPwd}
+              className="text-muted-foreground"
+            >
               {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>

@@ -18,7 +18,9 @@ function Explore() {
       <div className="mt-5 flex gap-2 overflow-x-auto px-5 pb-2 [&::-webkit-scrollbar]:hidden">
         {categories.map((c, i) => (
           <button
+            type="button"
             key={c}
+            aria-pressed={i === 0}
             className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
               i === 0 ? "bg-foreground text-background" : "bg-secondary text-foreground"
             }`}
@@ -37,10 +39,10 @@ function Explore() {
             className={`relative overflow-hidden rounded-3xl shadow-soft ${i % 3 === 0 ? "row-span-2 h-[28rem]" : "h-52"}`}
           >
             <img src={d.image} alt={d.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="gradient-overlay absolute inset-0" />
+            <div className="gradient-overlay absolute inset-0" aria-hidden="true" />
             <div className="absolute inset-x-3 bottom-3 text-background">
               <p className="flex items-center gap-1 text-[10px] opacity-85">
-                <MapPin size={10} /> {d.location}
+                <MapPin size={10} aria-hidden="true" /> {d.location}
               </p>
               <h3 className="font-display text-base leading-tight">{d.title}</h3>
             </div>
