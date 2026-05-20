@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
+import { useAuth } from "@/hooks/use-auth";
 import maldives from "@/assets/dest-maldives.jpg";
 import adventure from "@/assets/dest-adventure.jpg";
 import cultural from "@/assets/dest-cultural.jpg";
@@ -15,16 +16,23 @@ const moodCards = [
 ];
 
 function HomePage() {
+  const { displayName, isGuest } = useAuth();
+  const hour = new Date().getHours();
+  const partOfDay =
+    hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+  const firstName = displayName.split(" ")[0];
+  const greeting = isGuest ? partOfDay : `${partOfDay}, ${firstName}`;
+
   return (
     <AppShell>
       <header className="px-5 pt-12">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground">
-              Good Morning
+              {greeting}
             </h1>
             <p className="mt-2 text-base text-muted-foreground">
-              Ready for your next adventure?
+              {isGuest ? "Browsing as a guest — ready to explore?" : "Ready for your next adventure?"}
             </p>
           </div>
           <button
