@@ -1,12 +1,7 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
+// Guests are allowed through. Per-feature gates (Chat, Profile, bookings)
+// are enforced with <GuestGate /> inside the relevant route components.
 export const Route = createFileRoute("/_authenticated")({
-  beforeLoad: async () => {
-    const { data } = await supabase.auth.getSession();
-    if (!data.session) {
-      throw redirect({ to: "/signin" });
-    }
-  },
   component: () => <Outlet />,
 });

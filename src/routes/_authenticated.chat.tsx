@@ -2,8 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Send, Sparkles, Mic } from "lucide-react";
 import { useState } from "react";
+import { GuestGate } from "@/components/GuestGate";
 
-export const Route = createFileRoute("/_authenticated/chat")({ component: Chat });
+export const Route = createFileRoute("/_authenticated/chat")({
+  component: () => (
+    <GuestGate
+      feature="Chat"
+      description="Sign up to chat with our AI travel coach and plan trips together."
+    >
+      <Chat />
+    </GuestGate>
+  ),
+});
 
 const seed = [
   { from: "ai", text: "Morning, Ada. Want me to sketch a 4-day Lisbon trip under $1,200?" },

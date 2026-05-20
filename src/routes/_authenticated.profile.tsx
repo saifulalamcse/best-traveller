@@ -1,8 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Settings, Heart, CreditCard, Globe, LogOut, ChevronRight, Award } from "lucide-react";
-import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/profile")({ component: Profile });
 
@@ -21,26 +22,63 @@ const rows = [
 
 function Profile() {
   const navigate = useNavigate();
-  const [name, setName] = useState("Traveller");
-  const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      setEmail(user.email ?? "");
-      const { data: profile } = await supabase
-        .from("profiles").select("full_name").eq("id", user.id).maybeSingle();
-      setName(profile?.full_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "Traveller");
-    })();
-  }, []);
-
+  const { isGuest, displayName: name, email, loading } = useAuth();
   const initial = name.charAt(0).toUpperCase();
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    toast.success("Signed out");
     navigate({ to: "/" });
   };
+
+  if (loading) {
+    return (
+      <AppShell>
+        <div className="px-5 pt-24 text-center text-sm text-muted-foreground">Loading…</div>
+      </AppShell>
+    );
+  }
+
+  if (isGuest) {
+    return (
+      <AppShell>
+        <header className="px-5 pt-12">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary font-display text-2xl text-muted-foreground">
+              ?
+            </div>
+            <div>
+              <h1 className="font-display text-2xl text-foreground">Guest traveller</h1>
+              <p className="text-xs text-muted-foreground">Browsing without an account</p>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-3xl bg-card p-6 text-center shadow-soft">
+            <h2 className="font-display text-2xl leading-tight text-foreground">
+              Save trips, sync devices, unlock chat.
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Create a free account to keep your itineraries and member rates.
+            </p>
+            <div className="mt-5 space-y-2">
+              <Link
+                to="/signup"
+                className="flex h-12 w-full items-center justify-center rounded-2xl bg-foreground text-sm font-semibold text-background"
+              >
+                Sign up
+              </Link>
+              <Link
+                to="/signin"
+                className="flex h-12 w-full items-center justify-center rounded-2xl border border-border bg-card text-sm font-medium text-foreground"
+              >
+                Log in
+              </Link>
+            </div>
+          </div>
+        </header>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>

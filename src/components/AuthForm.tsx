@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { ArrowLeft, Mail, Lock, User as UserIcon, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { toast } from "sonner";
 
 type Mode = "signin" | "signup";
 
@@ -35,17 +36,23 @@ export function AuthForm({ mode }: { mode: Mode }) {
         });
         if (error) throw error;
         if (data.session) {
+          toast.success(`Welcome aboard, ${fullName || "traveller"}!`);
           navigate({ to: "/home" });
         } else {
-          setInfo("Check your email to confirm your account.");
+          const msg = "Check your email to confirm your account.";
+          setInfo(msg);
+          toast.success(msg);
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        toast.success("Welcome back!");
         navigate({ to: "/home" });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
