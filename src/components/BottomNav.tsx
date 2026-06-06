@@ -25,10 +25,10 @@ export function BottomNav() {
                 to={to}
                 aria-label={label}
                 aria-current={active ? "page" : undefined}
-                className="group flex flex-col items-center gap-1 rounded-2xl px-2 py-2 transition-colors"
+                className="group flex flex-col items-center gap-1 rounded-2xl px-2 py-2 transition-all active:scale-95"
               >
                 <span
-                  className={`flex h-9 w-9 items-center justify-center rounded-2xl transition-all ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-2xl transition-all group-hover:scale-105 ${
                     active ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground"
                   }`}
                 >

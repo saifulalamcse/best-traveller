@@ -14,12 +14,14 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedStaysRouteImport } from './routes/_authenticated.stays'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated.search'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
 import { Route as AuthenticatedItinerariesRouteImport } from './routes/_authenticated.itineraries'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated.explore'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated.chat'
+import { Route as AuthenticatedDestinationsIdRouteImport } from './routes/_authenticated.destinations.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -44,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedStaysRoute = AuthenticatedStaysRouteImport.update({
+  id: '/stays',
+  path: '/stays',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
   id: '/search',
@@ -76,6 +83,12 @@ const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDestinationsIdRoute =
+  AuthenticatedDestinationsIdRouteImport.update({
+    id: '/destinations/$id',
+    path: '/destinations/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,6 +101,8 @@ export interface FileRoutesByFullPath {
   '/itineraries': typeof AuthenticatedItinerariesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/stays': typeof AuthenticatedStaysRoute
+  '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,6 +115,8 @@ export interface FileRoutesByTo {
   '/itineraries': typeof AuthenticatedItinerariesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/stays': typeof AuthenticatedStaysRoute
+  '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,6 +131,8 @@ export interface FileRoutesById {
   '/_authenticated/itineraries': typeof AuthenticatedItinerariesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
+  '/_authenticated/stays': typeof AuthenticatedStaysRoute
+  '/_authenticated/destinations/$id': typeof AuthenticatedDestinationsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -128,6 +147,8 @@ export interface FileRouteTypes {
     | '/itineraries'
     | '/profile'
     | '/search'
+    | '/stays'
+    | '/destinations/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,6 +161,8 @@ export interface FileRouteTypes {
     | '/itineraries'
     | '/profile'
     | '/search'
+    | '/stays'
+    | '/destinations/$id'
   id:
     | '__root__'
     | '/'
@@ -153,6 +176,8 @@ export interface FileRouteTypes {
     | '/_authenticated/itineraries'
     | '/_authenticated/profile'
     | '/_authenticated/search'
+    | '/_authenticated/stays'
+    | '/_authenticated/destinations/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -200,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/stays': {
+      id: '/_authenticated/stays'
+      path: '/stays'
+      fullPath: '/stays'
+      preLoaderRoute: typeof AuthenticatedStaysRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/search': {
       id: '/_authenticated/search'
       path: '/search'
@@ -242,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/destinations/$id': {
+      id: '/_authenticated/destinations/$id'
+      path: '/destinations/$id'
+      fullPath: '/destinations/$id'
+      preLoaderRoute: typeof AuthenticatedDestinationsIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -252,6 +291,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedItinerariesRoute: typeof AuthenticatedItinerariesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
+  AuthenticatedStaysRoute: typeof AuthenticatedStaysRoute
+  AuthenticatedDestinationsIdRoute: typeof AuthenticatedDestinationsIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -261,6 +302,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedItinerariesRoute: AuthenticatedItinerariesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
+  AuthenticatedStaysRoute: AuthenticatedStaysRoute,
+  AuthenticatedDestinationsIdRoute: AuthenticatedDestinationsIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -277,3 +320,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
