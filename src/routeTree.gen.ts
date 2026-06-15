@@ -21,6 +21,7 @@ import { Route as AuthenticatedItinerariesRouteImport } from './routes/_authenti
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated.explore'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated.chat'
+import { Route as AuthenticatedTripsIdRouteImport } from './routes/_authenticated.trips.$id'
 import { Route as AuthenticatedDestinationsIdRouteImport } from './routes/_authenticated.destinations.$id'
 
 const SignupRoute = SignupRouteImport.update({
@@ -83,6 +84,11 @@ const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedTripsIdRoute = AuthenticatedTripsIdRouteImport.update({
+  id: '/trips/$id',
+  path: '/trips/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDestinationsIdRoute =
   AuthenticatedDestinationsIdRouteImport.update({
     id: '/destinations/$id',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
+  '/trips/$id': typeof AuthenticatedTripsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
+  '/trips/$id': typeof AuthenticatedTripsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/stays': typeof AuthenticatedStaysRoute
   '/_authenticated/destinations/$id': typeof AuthenticatedDestinationsIdRoute
+  '/_authenticated/trips/$id': typeof AuthenticatedTripsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/stays'
     | '/destinations/$id'
+    | '/trips/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/stays'
     | '/destinations/$id'
+    | '/trips/$id'
   id:
     | '__root__'
     | '/'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/_authenticated/search'
     | '/_authenticated/stays'
     | '/_authenticated/destinations/$id'
+    | '/_authenticated/trips/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -274,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/trips/$id': {
+      id: '/_authenticated/trips/$id'
+      path: '/trips/$id'
+      fullPath: '/trips/$id'
+      preLoaderRoute: typeof AuthenticatedTripsIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/destinations/$id': {
       id: '/_authenticated/destinations/$id'
       path: '/destinations/$id'
@@ -293,6 +312,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedStaysRoute: typeof AuthenticatedStaysRoute
   AuthenticatedDestinationsIdRoute: typeof AuthenticatedDestinationsIdRoute
+  AuthenticatedTripsIdRoute: typeof AuthenticatedTripsIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -304,6 +324,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedStaysRoute: AuthenticatedStaysRoute,
   AuthenticatedDestinationsIdRoute: AuthenticatedDestinationsIdRoute,
+  AuthenticatedTripsIdRoute: AuthenticatedTripsIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
