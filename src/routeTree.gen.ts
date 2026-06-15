@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedStaysRouteImport } from './routes/_authenticated.stays'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated.search'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated.profile'
+import { Route as AuthenticatedItinerariesRouteImport } from './routes/_authenticated.itineraries'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated.explore'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated.chat'
@@ -61,6 +62,12 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedItinerariesRoute =
+  AuthenticatedItinerariesRouteImport.update({
+    id: '/itineraries',
+    path: '/itineraries',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -91,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof AuthenticatedChatRoute
   '/explore': typeof AuthenticatedExploreRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/itineraries': typeof AuthenticatedItinerariesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
@@ -104,6 +112,7 @@ export interface FileRoutesByTo {
   '/chat': typeof AuthenticatedChatRoute
   '/explore': typeof AuthenticatedExploreRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/itineraries': typeof AuthenticatedItinerariesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
@@ -119,6 +128,7 @@ export interface FileRoutesById {
   '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/explore': typeof AuthenticatedExploreRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/itineraries': typeof AuthenticatedItinerariesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/stays': typeof AuthenticatedStaysRoute
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/explore'
     | '/home'
+    | '/itineraries'
     | '/profile'
     | '/search'
     | '/stays'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/explore'
     | '/home'
+    | '/itineraries'
     | '/profile'
     | '/search'
     | '/stays'
@@ -161,6 +173,7 @@ export interface FileRouteTypes {
     | '/_authenticated/chat'
     | '/_authenticated/explore'
     | '/_authenticated/home'
+    | '/_authenticated/itineraries'
     | '/_authenticated/profile'
     | '/_authenticated/search'
     | '/_authenticated/stays'
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/itineraries': {
+      id: '/_authenticated/itineraries'
+      path: '/itineraries'
+      fullPath: '/itineraries'
+      preLoaderRoute: typeof AuthenticatedItinerariesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/home': {
       id: '/_authenticated/home'
       path: '/home'
@@ -268,6 +288,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedItinerariesRoute: typeof AuthenticatedItinerariesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedStaysRoute: typeof AuthenticatedStaysRoute
@@ -278,6 +299,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedExploreRoute: AuthenticatedExploreRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedItinerariesRoute: AuthenticatedItinerariesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedStaysRoute: AuthenticatedStaysRoute,
