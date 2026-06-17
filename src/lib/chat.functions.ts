@@ -48,16 +48,17 @@ export const deleteThread = createServerFn({ method: "POST" })
 export const getThreadMessages = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ threadId: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }): Promise<UIMessage[]> => {
+  .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("chat_messages_v2")
       .select("id, role, parts, created_at")
       .eq("thread_id", data.threadId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    return (rows ?? []).map((r) => ({
+    const msgs: UIMessage[] = (rows ?? []).map((r) => ({
       id: r.id,
       role: r.role as UIMessage["role"],
       parts: r.parts as UIMessage["parts"],
     }));
+    return { messages: msgs as unknown as Array<{ id: string; role: string; parts: unknown[] }> };
   });
