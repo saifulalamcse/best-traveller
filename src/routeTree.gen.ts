@@ -24,6 +24,7 @@ import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated.chat.index'
 import { Route as AuthenticatedTripsIdRouteImport } from './routes/_authenticated.trips.$id'
 import { Route as AuthenticatedDestinationsIdRouteImport } from './routes/_authenticated.destinations.$id'
+import { Route as AuthenticatedChatThreadIdRouteImport } from './routes/_authenticated.chat.$threadId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -101,6 +102,12 @@ const AuthenticatedDestinationsIdRoute =
     path: '/destinations/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedChatThreadIdRoute =
+  AuthenticatedChatThreadIdRouteImport.update({
+    id: '/chat/$threadId',
+    path: '/chat/$threadId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/$threadId': typeof AuthenticatedChatThreadIdRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
   '/chat/': typeof AuthenticatedChatIndexRoute
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
   '/api/chat': typeof ApiChatRoute
+  '/chat/$threadId': typeof AuthenticatedChatThreadIdRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
   '/chat': typeof AuthenticatedChatIndexRoute
@@ -148,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/stays': typeof AuthenticatedStaysRoute
   '/api/chat': typeof ApiChatRoute
+  '/_authenticated/chat/$threadId': typeof AuthenticatedChatThreadIdRoute
   '/_authenticated/destinations/$id': typeof AuthenticatedDestinationsIdRoute
   '/_authenticated/trips/$id': typeof AuthenticatedTripsIdRoute
   '/_authenticated/chat/': typeof AuthenticatedChatIndexRoute
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/stays'
     | '/api/chat'
+    | '/chat/$threadId'
     | '/destinations/$id'
     | '/trips/$id'
     | '/chat/'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/stays'
     | '/api/chat'
+    | '/chat/$threadId'
     | '/destinations/$id'
     | '/trips/$id'
     | '/chat'
@@ -199,6 +211,7 @@ export interface FileRouteTypes {
     | '/_authenticated/search'
     | '/_authenticated/stays'
     | '/api/chat'
+    | '/_authenticated/chat/$threadId'
     | '/_authenticated/destinations/$id'
     | '/_authenticated/trips/$id'
     | '/_authenticated/chat/'
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDestinationsIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/chat/$threadId': {
+      id: '/_authenticated/chat/$threadId'
+      path: '/chat/$threadId'
+      fullPath: '/chat/$threadId'
+      preLoaderRoute: typeof AuthenticatedChatThreadIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -330,6 +350,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedStaysRoute: typeof AuthenticatedStaysRoute
+  AuthenticatedChatThreadIdRoute: typeof AuthenticatedChatThreadIdRoute
   AuthenticatedDestinationsIdRoute: typeof AuthenticatedDestinationsIdRoute
   AuthenticatedTripsIdRoute: typeof AuthenticatedTripsIdRoute
   AuthenticatedChatIndexRoute: typeof AuthenticatedChatIndexRoute
@@ -342,6 +363,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedStaysRoute: AuthenticatedStaysRoute,
+  AuthenticatedChatThreadIdRoute: AuthenticatedChatThreadIdRoute,
   AuthenticatedDestinationsIdRoute: AuthenticatedDestinationsIdRoute,
   AuthenticatedTripsIdRoute: AuthenticatedTripsIdRoute,
   AuthenticatedChatIndexRoute: AuthenticatedChatIndexRoute,
