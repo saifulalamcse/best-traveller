@@ -1,7 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import type { UIMessage } from "ai";
+
+export type PersistedMessage = {
+  id: string;
+  role: "user" | "assistant" | "system";
+  text: string;
+};
 
 export type ThreadRow = {
   id: string;
@@ -55,10 +60,17 @@ export const getThreadMessages = createServerFn({ method: "GET" })
       .eq("thread_id", data.threadId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    const msgs: UIMessage[] = (rows ?? []).map((r) => ({
-      id: r.id,
-      role: r.role as UIMessage["role"],
-      parts: r.parts as UIMessage["parts"],
-    }));
-    return { messages: msgs as unknown as Array<{ id: string; role: string; parts: unknown[] }> };
+    const msgs: PersistedMessage[] = (rows ?? []).map((r) => {
+      const parts = Array.isArray(r.parts) ? (r.parts as Array<{ type: string; text?: string }>) : [];
+      const text = parts
+        .filter((p) => p && p.type === "text" && typeof p.text === "string")
+        .map((p) => p.text as string)
+        .join("");
+      return {
+        id: r.id,
+        role: r.role as PersistedMessage["role"],
+        text,
+      };
+    });
+    return msgs;
   });
