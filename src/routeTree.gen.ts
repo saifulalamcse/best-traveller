@@ -21,6 +21,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedItinerariesRouteImport } from './routes/_authenticated.itineraries'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.home'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated.explore'
+import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated.chat.index'
 import { Route as AuthenticatedTripsIdRouteImport } from './routes/_authenticated.trips.$id'
 import { Route as AuthenticatedDestinationsIdRouteImport } from './routes/_authenticated.destinations.$id'
 
@@ -84,6 +85,11 @@ const AuthenticatedExploreRoute = AuthenticatedExploreRouteImport.update({
   path: '/explore',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedChatIndexRoute = AuthenticatedChatIndexRouteImport.update({
+  id: '/chat/',
+  path: '/chat/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedTripsIdRoute = AuthenticatedTripsIdRouteImport.update({
   id: '/trips/$id',
   path: '/trips/$id',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
+  '/chat/': typeof AuthenticatedChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
+  '/chat': typeof AuthenticatedChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/destinations/$id': typeof AuthenticatedDestinationsIdRoute
   '/_authenticated/trips/$id': typeof AuthenticatedTripsIdRoute
+  '/_authenticated/chat/': typeof AuthenticatedChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/destinations/$id'
     | '/trips/$id'
+    | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/destinations/$id'
     | '/trips/$id'
+    | '/chat'
   id:
     | '__root__'
     | '/'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/_authenticated/destinations/$id'
     | '/_authenticated/trips/$id'
+    | '/_authenticated/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -287,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExploreRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/chat/': {
+      id: '/_authenticated/chat/'
+      path: '/chat'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof AuthenticatedChatIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/trips/$id': {
       id: '/_authenticated/trips/$id'
       path: '/trips/$id'
@@ -313,6 +332,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedStaysRoute: typeof AuthenticatedStaysRoute
   AuthenticatedDestinationsIdRoute: typeof AuthenticatedDestinationsIdRoute
   AuthenticatedTripsIdRoute: typeof AuthenticatedTripsIdRoute
+  AuthenticatedChatIndexRoute: typeof AuthenticatedChatIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -324,6 +344,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedStaysRoute: AuthenticatedStaysRoute,
   AuthenticatedDestinationsIdRoute: AuthenticatedDestinationsIdRoute,
   AuthenticatedTripsIdRoute: AuthenticatedTripsIdRoute,
+  AuthenticatedChatIndexRoute: AuthenticatedChatIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -341,13 +362,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
