@@ -17,18 +17,20 @@ function AccountSettings() {
 
   useEffect(() => { setName(displayName); }, [displayName]);
   useEffect(() => {
-    if (!user?.id) return;
-    supabase.from("profiles").select("phone").eq("id", user.id).maybeSingle().then(({ data }) => {
-      if (data && (data as { phone?: string }).phone) setPhone((data as { phone: string }).phone);
-    });
+    const meta = user?.user_metadata as { phone?: string } | undefined;
+    if (meta?.phone) setPhone(meta.phone);
   }, [user?.id]);
 
   const saveProfile = async () => {
     if (!user?.id) return;
     setSaving(true);
-    const { error } = await supabase.from("profiles").update({ full_name: name }).eq("id", user.id);
+    const [{ error: profErr }, { error: authErr }] = await Promise.all([
+      supabase.from("profiles").update({ full_name: name }).eq("id", user.id),
+      supabase.auth.updateUser({ data: { full_name: name, phone } }),
+    ]);
     setSaving(false);
-    if (error) toast.error(error.message);
+    const err = profErr || authErr;
+    if (err) toast.error(err.message);
     else toast.success("Profile updated");
   };
 

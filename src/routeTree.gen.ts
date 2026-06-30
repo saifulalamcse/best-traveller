@@ -23,6 +23,7 @@ import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.h
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated.explore'
 import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated.chat.index'
 import { Route as AuthenticatedTripsIdRouteImport } from './routes/_authenticated.trips.$id'
+import { Route as AuthenticatedProfileSettingsRouteImport } from './routes/_authenticated.profile.settings'
 import { Route as AuthenticatedProfileSavedRouteImport } from './routes/_authenticated.profile.saved'
 import { Route as AuthenticatedProfilePreferencesRouteImport } from './routes/_authenticated.profile.preferences'
 import { Route as AuthenticatedProfilePaymentRouteImport } from './routes/_authenticated.profile.payment'
@@ -99,6 +100,12 @@ const AuthenticatedTripsIdRoute = AuthenticatedTripsIdRouteImport.update({
   path: '/trips/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedProfileSettingsRoute =
+  AuthenticatedProfileSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedProfileRoute,
+  } as any)
 const AuthenticatedProfileSavedRoute =
   AuthenticatedProfileSavedRouteImport.update({
     id: '/saved',
@@ -147,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/profile/payment': typeof AuthenticatedProfilePaymentRoute
   '/profile/preferences': typeof AuthenticatedProfilePreferencesRoute
   '/profile/saved': typeof AuthenticatedProfileSavedRoute
+  '/profile/settings': typeof AuthenticatedProfileSettingsRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
   '/chat/': typeof AuthenticatedChatIndexRoute
 }
@@ -167,6 +175,7 @@ export interface FileRoutesByTo {
   '/profile/payment': typeof AuthenticatedProfilePaymentRoute
   '/profile/preferences': typeof AuthenticatedProfilePreferencesRoute
   '/profile/saved': typeof AuthenticatedProfileSavedRoute
+  '/profile/settings': typeof AuthenticatedProfileSettingsRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
   '/chat': typeof AuthenticatedChatIndexRoute
 }
@@ -189,6 +198,7 @@ export interface FileRoutesById {
   '/_authenticated/profile/payment': typeof AuthenticatedProfilePaymentRoute
   '/_authenticated/profile/preferences': typeof AuthenticatedProfilePreferencesRoute
   '/_authenticated/profile/saved': typeof AuthenticatedProfileSavedRoute
+  '/_authenticated/profile/settings': typeof AuthenticatedProfileSettingsRoute
   '/_authenticated/trips/$id': typeof AuthenticatedTripsIdRoute
   '/_authenticated/chat/': typeof AuthenticatedChatIndexRoute
 }
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/profile/payment'
     | '/profile/preferences'
     | '/profile/saved'
+    | '/profile/settings'
     | '/trips/$id'
     | '/chat/'
   fileRoutesByTo: FileRoutesByTo
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/profile/payment'
     | '/profile/preferences'
     | '/profile/saved'
+    | '/profile/settings'
     | '/trips/$id'
     | '/chat'
   id:
@@ -252,6 +264,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile/payment'
     | '/_authenticated/profile/preferences'
     | '/_authenticated/profile/saved'
+    | '/_authenticated/profile/settings'
     | '/_authenticated/trips/$id'
     | '/_authenticated/chat/'
   fileRoutesById: FileRoutesById
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTripsIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/profile/settings': {
+      id: '/_authenticated/profile/settings'
+      path: '/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof AuthenticatedProfileSettingsRouteImport
+      parentRoute: typeof AuthenticatedProfileRoute
+    }
     '/_authenticated/profile/saved': {
       id: '/_authenticated/profile/saved'
       path: '/saved'
@@ -407,12 +427,14 @@ interface AuthenticatedProfileRouteChildren {
   AuthenticatedProfilePaymentRoute: typeof AuthenticatedProfilePaymentRoute
   AuthenticatedProfilePreferencesRoute: typeof AuthenticatedProfilePreferencesRoute
   AuthenticatedProfileSavedRoute: typeof AuthenticatedProfileSavedRoute
+  AuthenticatedProfileSettingsRoute: typeof AuthenticatedProfileSettingsRoute
 }
 
 const AuthenticatedProfileRouteChildren: AuthenticatedProfileRouteChildren = {
   AuthenticatedProfilePaymentRoute: AuthenticatedProfilePaymentRoute,
   AuthenticatedProfilePreferencesRoute: AuthenticatedProfilePreferencesRoute,
   AuthenticatedProfileSavedRoute: AuthenticatedProfileSavedRoute,
+  AuthenticatedProfileSettingsRoute: AuthenticatedProfileSettingsRoute,
 }
 
 const AuthenticatedProfileRouteWithChildren =
