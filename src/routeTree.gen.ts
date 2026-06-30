@@ -23,6 +23,10 @@ import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated.h
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated.explore'
 import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated.chat.index'
 import { Route as AuthenticatedTripsIdRouteImport } from './routes/_authenticated.trips.$id'
+import { Route as AuthenticatedProfileSettingsRouteImport } from './routes/_authenticated.profile.settings'
+import { Route as AuthenticatedProfileSavedRouteImport } from './routes/_authenticated.profile.saved'
+import { Route as AuthenticatedProfilePreferencesRouteImport } from './routes/_authenticated.profile.preferences'
+import { Route as AuthenticatedProfilePaymentRouteImport } from './routes/_authenticated.profile.payment'
 import { Route as AuthenticatedDestinationsIdRouteImport } from './routes/_authenticated.destinations.$id'
 import { Route as AuthenticatedChatThreadIdRouteImport } from './routes/_authenticated.chat.$threadId'
 
@@ -96,6 +100,30 @@ const AuthenticatedTripsIdRoute = AuthenticatedTripsIdRouteImport.update({
   path: '/trips/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedProfileSettingsRoute =
+  AuthenticatedProfileSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedProfileRoute,
+  } as any)
+const AuthenticatedProfileSavedRoute =
+  AuthenticatedProfileSavedRouteImport.update({
+    id: '/saved',
+    path: '/saved',
+    getParentRoute: () => AuthenticatedProfileRoute,
+  } as any)
+const AuthenticatedProfilePreferencesRoute =
+  AuthenticatedProfilePreferencesRouteImport.update({
+    id: '/preferences',
+    path: '/preferences',
+    getParentRoute: () => AuthenticatedProfileRoute,
+  } as any)
+const AuthenticatedProfilePaymentRoute =
+  AuthenticatedProfilePaymentRouteImport.update({
+    id: '/payment',
+    path: '/payment',
+    getParentRoute: () => AuthenticatedProfileRoute,
+  } as any)
 const AuthenticatedDestinationsIdRoute =
   AuthenticatedDestinationsIdRouteImport.update({
     id: '/destinations/$id',
@@ -117,12 +145,16 @@ export interface FileRoutesByFullPath {
   '/explore': typeof AuthenticatedExploreRoute
   '/home': typeof AuthenticatedHomeRoute
   '/itineraries': typeof AuthenticatedItinerariesRoute
-  '/profile': typeof AuthenticatedProfileRoute
+  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$threadId': typeof AuthenticatedChatThreadIdRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
+  '/profile/payment': typeof AuthenticatedProfilePaymentRoute
+  '/profile/preferences': typeof AuthenticatedProfilePreferencesRoute
+  '/profile/saved': typeof AuthenticatedProfileSavedRoute
+  '/profile/settings': typeof AuthenticatedProfileSettingsRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
   '/chat/': typeof AuthenticatedChatIndexRoute
 }
@@ -134,12 +166,16 @@ export interface FileRoutesByTo {
   '/explore': typeof AuthenticatedExploreRoute
   '/home': typeof AuthenticatedHomeRoute
   '/itineraries': typeof AuthenticatedItinerariesRoute
-  '/profile': typeof AuthenticatedProfileRoute
+  '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/search': typeof AuthenticatedSearchRoute
   '/stays': typeof AuthenticatedStaysRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$threadId': typeof AuthenticatedChatThreadIdRoute
   '/destinations/$id': typeof AuthenticatedDestinationsIdRoute
+  '/profile/payment': typeof AuthenticatedProfilePaymentRoute
+  '/profile/preferences': typeof AuthenticatedProfilePreferencesRoute
+  '/profile/saved': typeof AuthenticatedProfileSavedRoute
+  '/profile/settings': typeof AuthenticatedProfileSettingsRoute
   '/trips/$id': typeof AuthenticatedTripsIdRoute
   '/chat': typeof AuthenticatedChatIndexRoute
 }
@@ -153,12 +189,16 @@ export interface FileRoutesById {
   '/_authenticated/explore': typeof AuthenticatedExploreRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/itineraries': typeof AuthenticatedItinerariesRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/stays': typeof AuthenticatedStaysRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/chat/$threadId': typeof AuthenticatedChatThreadIdRoute
   '/_authenticated/destinations/$id': typeof AuthenticatedDestinationsIdRoute
+  '/_authenticated/profile/payment': typeof AuthenticatedProfilePaymentRoute
+  '/_authenticated/profile/preferences': typeof AuthenticatedProfilePreferencesRoute
+  '/_authenticated/profile/saved': typeof AuthenticatedProfileSavedRoute
+  '/_authenticated/profile/settings': typeof AuthenticatedProfileSettingsRoute
   '/_authenticated/trips/$id': typeof AuthenticatedTripsIdRoute
   '/_authenticated/chat/': typeof AuthenticatedChatIndexRoute
 }
@@ -178,6 +218,10 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/chat/$threadId'
     | '/destinations/$id'
+    | '/profile/payment'
+    | '/profile/preferences'
+    | '/profile/saved'
+    | '/profile/settings'
     | '/trips/$id'
     | '/chat/'
   fileRoutesByTo: FileRoutesByTo
@@ -195,6 +239,10 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/chat/$threadId'
     | '/destinations/$id'
+    | '/profile/payment'
+    | '/profile/preferences'
+    | '/profile/saved'
+    | '/profile/settings'
     | '/trips/$id'
     | '/chat'
   id:
@@ -213,6 +261,10 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/_authenticated/chat/$threadId'
     | '/_authenticated/destinations/$id'
+    | '/_authenticated/profile/payment'
+    | '/_authenticated/profile/preferences'
+    | '/_authenticated/profile/saved'
+    | '/_authenticated/profile/settings'
     | '/_authenticated/trips/$id'
     | '/_authenticated/chat/'
   fileRoutesById: FileRoutesById
@@ -326,6 +378,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTripsIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/profile/settings': {
+      id: '/_authenticated/profile/settings'
+      path: '/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof AuthenticatedProfileSettingsRouteImport
+      parentRoute: typeof AuthenticatedProfileRoute
+    }
+    '/_authenticated/profile/saved': {
+      id: '/_authenticated/profile/saved'
+      path: '/saved'
+      fullPath: '/profile/saved'
+      preLoaderRoute: typeof AuthenticatedProfileSavedRouteImport
+      parentRoute: typeof AuthenticatedProfileRoute
+    }
+    '/_authenticated/profile/preferences': {
+      id: '/_authenticated/profile/preferences'
+      path: '/preferences'
+      fullPath: '/profile/preferences'
+      preLoaderRoute: typeof AuthenticatedProfilePreferencesRouteImport
+      parentRoute: typeof AuthenticatedProfileRoute
+    }
+    '/_authenticated/profile/payment': {
+      id: '/_authenticated/profile/payment'
+      path: '/payment'
+      fullPath: '/profile/payment'
+      preLoaderRoute: typeof AuthenticatedProfilePaymentRouteImport
+      parentRoute: typeof AuthenticatedProfileRoute
+    }
     '/_authenticated/destinations/$id': {
       id: '/_authenticated/destinations/$id'
       path: '/destinations/$id'
@@ -343,11 +423,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedProfileRouteChildren {
+  AuthenticatedProfilePaymentRoute: typeof AuthenticatedProfilePaymentRoute
+  AuthenticatedProfilePreferencesRoute: typeof AuthenticatedProfilePreferencesRoute
+  AuthenticatedProfileSavedRoute: typeof AuthenticatedProfileSavedRoute
+  AuthenticatedProfileSettingsRoute: typeof AuthenticatedProfileSettingsRoute
+}
+
+const AuthenticatedProfileRouteChildren: AuthenticatedProfileRouteChildren = {
+  AuthenticatedProfilePaymentRoute: AuthenticatedProfilePaymentRoute,
+  AuthenticatedProfilePreferencesRoute: AuthenticatedProfilePreferencesRoute,
+  AuthenticatedProfileSavedRoute: AuthenticatedProfileSavedRoute,
+  AuthenticatedProfileSettingsRoute: AuthenticatedProfileSettingsRoute,
+}
+
+const AuthenticatedProfileRouteWithChildren =
+  AuthenticatedProfileRoute._addFileChildren(AuthenticatedProfileRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedItinerariesRoute: typeof AuthenticatedItinerariesRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedStaysRoute: typeof AuthenticatedStaysRoute
   AuthenticatedChatThreadIdRoute: typeof AuthenticatedChatThreadIdRoute
@@ -360,7 +457,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedExploreRoute: AuthenticatedExploreRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedItinerariesRoute: AuthenticatedItinerariesRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedStaysRoute: AuthenticatedStaysRoute,
   AuthenticatedChatThreadIdRoute: AuthenticatedChatThreadIdRoute,
