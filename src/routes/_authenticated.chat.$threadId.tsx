@@ -12,6 +12,11 @@ import {
   createThread,
   deleteThread,
   getThreadMessages,
+  updateThreadModel,
+  ALLOWED_MODELS,
+  MODEL_LABELS,
+  DEFAULT_MODEL,
+  type ChatModel,
   type PersistedMessage,
   type ThreadRow,
 } from "@/lib/chat.functions";
@@ -40,11 +45,20 @@ function ChatThread() {
   const fetchMessages = useServerFn(getThreadMessages);
   const createNew = useServerFn(createThread);
   const removeThread = useServerFn(deleteThread);
+  const saveModel = useServerFn(updateThreadModel);
 
   const threadsQuery = useQuery({
     queryKey: ["chat-threads"],
     queryFn: () => fetchThreads(),
   });
+
+  const currentThread = (threadsQuery.data ?? []).find((t) => t.id === threadId);
+  const [model, setModel] = useState<ChatModel>(DEFAULT_MODEL);
+  useEffect(() => {
+    if (currentThread?.model && (ALLOWED_MODELS as readonly string[]).includes(currentThread.model)) {
+      setModel(currentThread.model as ChatModel);
+    }
+  }, [currentThread?.model]);
 
   const messagesQuery = useQuery({
     queryKey: ["chat-messages", threadId],
@@ -72,12 +86,12 @@ function ChatThread() {
           const headers: Record<string, string> = {};
           if (token) headers.Authorization = `Bearer ${token}`;
           return {
-            body: { messages, threadId, ...(body ?? {}) },
+            body: { messages, threadId, model, ...(body ?? {}) },
             headers,
           };
         },
       }),
-    [threadId],
+    [threadId, model],
   );
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
@@ -111,6 +125,16 @@ function ChatThread() {
   }, [threadId]);
 
   const isLoading = status === "submitted" || status === "streaming";
+
+  async function handleModelChange(next: ChatModel) {
+    setModel(next);
+    try {
+      await saveModel({ data: { id: threadId, model: next } });
+      qc.invalidateQueries({ queryKey: ["chat-threads"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not switch model");
+    }
+  }
 
   function send(text: string) {
     const trimmed = text.trim();
@@ -162,6 +186,18 @@ function ChatThread() {
         <div className="text-center">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">AI Coach</p>
           <h1 className="mt-1 font-display text-2xl text-foreground">Wander.</h1>
+          <select
+            aria-label="AI model"
+            value={model}
+            onChange={(e) => handleModelChange(e.target.value as ChatModel)}
+            className="mt-1 rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
+          >
+            {ALLOWED_MODELS.map((m) => (
+              <option key={m} value={m}>
+                {MODEL_LABELS[m]}
+              </option>
+            ))}
+          </select>
         </div>
         <button
           type="button"

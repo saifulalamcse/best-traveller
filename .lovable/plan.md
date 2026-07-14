@@ -1,40 +1,32 @@
-## Make the Chat fully functional with real AI + threaded history
+## Add Gemini + ChatGPT model selection to Chat
 
-Right now the chat replies with hardcoded mock text (same message for every input), and conversations aren't saved. I'll replace it with a real AI-powered chat using Lovable AI (Gemini 3 Pro), with threaded conversations persisted in the database per user.
+Good news — your chat is already wired to Lovable AI, which routes to both Google Gemini and OpenAI GPT models through one gateway. No API keys needed (the `LOVABLE_API_KEY` is already provisioned). Today it's hardcoded to `google/gemini-3.1-pro-preview`. I'll expose a picker so you can switch models per chat.
 
 ### What you'll get
-- Real AI travel coach (Gemini 3 Pro) that actually understands your messages
-- Streaming responses (text appears word-by-word, not after a long wait)
-- Multiple chat threads with a sidebar/list (New Chat button, switch between past chats, delete)
-- Each thread lives at its own URL (`/chat/:threadId`) and reloads correctly
-- All messages saved to your account in the database — survives refresh and works across devices
-- Polished chat UI built on AI Elements (proper bubbles, auto-scroll, typing/shimmer state, markdown rendering)
-- Friendly errors for rate limits / out-of-credits
+
+- A model dropdown in the chat header (next to "Wander") with these choices:
+  - **Gemini 3 Flash** (`google/gemini-3-flash-preview`) — fast default
+  - **Gemini 3.1 Pro** (`google/gemini-3.1-pro-preview`) — current, deeper reasoning
+  - **Gemini 2.5 Flash** (`google/gemini-2.5-flash`) — balanced
+  - **GPT-5** (`openai/gpt-5`) — OpenAI flagship
+  - **GPT-5 mini** (`openai/gpt-5-mini`) — cheaper OpenAI
+  - **GPT-5 nano** (`openai/gpt-5-nano`) — fastest OpenAI
+- Selection persists per thread (saved on `chat_threads.model`), so each conversation remembers its model.
+- New chats default to Gemini 3 Flash.
+- Server validates the model against an allowlist before calling the gateway.
 
 ### Plan
 
-1. **Database** — add two tables:
-   - `chat_threads` (id, user_id, title, updated_at) — RLS scoped to `auth.uid()`
-   - `chat_messages_v2` (id, thread_id, role, parts jsonb, created_at) — RLS via thread ownership
-   - (Existing `chat_messages` table stays untouched.)
+1. **DB migration** — add `model text` column to `chat_threads` (nullable, defaults to `google/gemini-3-flash-preview`).
+2. **`src/routes/api/chat.ts`** — accept `model` in the request body, validate against the allowlist, and pass it to `gateway(model)`. Persist it back to the thread.
+3. **`src/lib/chat.functions.ts`** — add `updateThreadModel({ id, model })` server fn; include `model` in `listThreads` / `getThreadMessages` returns.
+4. **`src/routes/_authenticated.chat.$threadId.tsx`** — add a compact model dropdown in the header. On change: update local state, persist via `updateThreadModel`, and include `model` in the transport body.
+5. Keep the existing system prompt, streaming, markdown rendering, and thread drawer unchanged.
 
-2. **Server route** `src/routes/api/chat.ts` — streaming endpoint using AI SDK + Lovable AI Gateway (`google/gemini-3.1-pro-preview`), with a travel-coach system prompt. Verifies the user, loads the thread, streams the reply, and saves the assistant message in `onFinish`.
+### Notes
 
-3. **Server functions** (`src/lib/chat.functions.ts`) — `listThreads`, `createThread`, `deleteThread`, `getThreadMessages`, all auth-gated.
-
-4. **Routes**:
-   - `/_authenticated/chat/index.tsx` — redirects to the latest thread or creates a new one
-   - `/_authenticated/chat/$threadId.tsx` — the chat screen, keyed by threadId
-   - Sidebar/drawer with thread list, "New chat" button, delete action
-
-5. **UI** — install AI Elements (`conversation`, `message`, `prompt-input`, `shimmer`, `response`) and rebuild the chat screen using them. Keep the existing visual style (rounded bubbles, bottom nav, suggestion pills). Render markdown in AI replies.
-
-6. **Guest flow** — guests still hit the existing `GuestGate` (sign up to chat). No changes there.
-
-### Technical notes
-- Uses Lovable AI (no API key setup needed — `LOVABLE_API_KEY` is already provisioned)
-- Model: `google/gemini-3.1-pro-preview`
-- `useChat` from `@ai-sdk/react` with `DefaultChatTransport` pointed at `/api/chat`
-- Bearer auth attached automatically via existing `attachSupabaseAuth` middleware
+- No new secrets, no new packages.
+- Billing: all model usage goes through your Lovable AI credits (free monthly allowance, then paid). GPT-5 costs more per request than Gemini Flash.
+- If you'd rather have a global default (set once in Profile) instead of per-chat, tell me and I'll adjust step 4.
 
 Want me to proceed?

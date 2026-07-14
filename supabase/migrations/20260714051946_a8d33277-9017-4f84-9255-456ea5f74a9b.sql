@@ -1,0 +1,1 @@
+ALTER TABLE public.chat_threads ADD COLUMN IF NOT EXISTS model text NOT NULL DEFAULT 'google/gemini-3-flash-preview';
