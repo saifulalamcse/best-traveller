@@ -13,6 +13,27 @@ export type ThreadRow = {
   title: string;
   updated_at: string;
   created_at: string;
+  model: string;
+};
+
+export const ALLOWED_MODELS = [
+  "google/gemini-3-flash-preview",
+  "google/gemini-3.1-pro-preview",
+  "google/gemini-2.5-flash",
+  "openai/gpt-5",
+  "openai/gpt-5-mini",
+  "openai/gpt-5-nano",
+] as const;
+export type ChatModel = (typeof ALLOWED_MODELS)[number];
+export const DEFAULT_MODEL: ChatModel = "google/gemini-3-flash-preview";
+
+export const MODEL_LABELS: Record<ChatModel, string> = {
+  "google/gemini-3-flash-preview": "Gemini 3 Flash",
+  "google/gemini-3.1-pro-preview": "Gemini 3.1 Pro",
+  "google/gemini-2.5-flash": "Gemini 2.5 Flash",
+  "openai/gpt-5": "GPT-5",
+  "openai/gpt-5-mini": "GPT-5 mini",
+  "openai/gpt-5-nano": "GPT-5 nano",
 };
 
 export const listThreads = createServerFn({ method: "GET" })
@@ -20,10 +41,10 @@ export const listThreads = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<ThreadRow[]> => {
     const { data, error } = await context.supabase
       .from("chat_threads")
-      .select("id, title, updated_at, created_at")
+      .select("id, title, updated_at, created_at, model")
       .order("updated_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return data ?? [];
+    return (data ?? []) as ThreadRow[];
   });
 
 export const createThread = createServerFn({ method: "POST" })
@@ -31,11 +52,11 @@ export const createThread = createServerFn({ method: "POST" })
   .handler(async ({ context }): Promise<ThreadRow> => {
     const { data, error } = await context.supabase
       .from("chat_threads")
-      .insert({ user_id: context.userId, title: "New chat" })
-      .select("id, title, updated_at, created_at")
+      .insert({ user_id: context.userId, title: "New chat", model: DEFAULT_MODEL })
+      .select("id, title, updated_at, created_at, model")
       .single();
     if (error) throw new Error(error.message);
-    return data;
+    return data as ThreadRow;
   });
 
 export const deleteThread = createServerFn({ method: "POST" })
@@ -45,6 +66,22 @@ export const deleteThread = createServerFn({ method: "POST" })
     const { error } = await context.supabase
       .from("chat_threads")
       .delete()
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const updateThreadModel = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({ id: z.string().uuid(), model: z.enum(ALLOWED_MODELS) })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("chat_threads")
+      .update({ model: data.model })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
