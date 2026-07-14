@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import type { Database } from "@/integrations/supabase/types";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { ALLOWED_MODELS, DEFAULT_MODEL, type ChatModel } from "@/lib/chat.functions";
 
 const SYSTEM_PROMPT = `You are Wander, a warm and knowledgeable AI travel coach inside the Wanderlust Planner app.
 Help the user plan trips, suggest destinations, build itineraries, find stays, estimate budgets, and answer travel questions.
@@ -44,8 +45,10 @@ export const Route = createFileRoute("/api/chat")({
           const body = (await request.json()) as {
             messages: UIMessage[];
             threadId: string;
+            model?: string;
           };
           const { messages, threadId } = body;
+          const requestedModel = body.model;
           if (!threadId || !Array.isArray(messages)) {
             return new Response("Bad request", { status: 400 });
           }
@@ -53,11 +56,22 @@ export const Route = createFileRoute("/api/chat")({
           // Confirm thread belongs to user (RLS will also enforce)
           const { data: thread, error: threadErr } = await supabase
             .from("chat_threads")
-            .select("id, title")
+            .select("id, title, model")
             .eq("id", threadId)
             .maybeSingle();
           if (threadErr || !thread) {
             return new Response("Thread not found", { status: 404 });
+          }
+
+          const model: ChatModel =
+            (ALLOWED_MODELS as readonly string[]).includes(requestedModel ?? "")
+              ? (requestedModel as ChatModel)
+              : (ALLOWED_MODELS as readonly string[]).includes(thread.model ?? "")
+                ? (thread.model as ChatModel)
+                : DEFAULT_MODEL;
+
+          if (requestedModel && requestedModel !== thread.model && model === requestedModel) {
+            await supabase.from("chat_threads").update({ model }).eq("id", threadId);
           }
 
           // Persist the latest user message (last in messages array)
@@ -84,10 +98,10 @@ export const Route = createFileRoute("/api/chat")({
           }
 
           const gateway = createLovableAiGatewayProvider(LOVABLE_API_KEY);
-          const model = gateway("google/gemini-3.1-pro-preview");
+          const chatModel = gateway(model);
 
           const result = streamText({
-            model,
+            model: chatModel,
             system: SYSTEM_PROMPT,
             messages: await convertToModelMessages(messages),
           });
